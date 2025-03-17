@@ -22,8 +22,10 @@ const Profile = () => {
   console.log(data);
   // const enrolledCourses = [1, 2];
 
-  if (!isLoading) return <h1>Profile Loading...</h1>;
-
+  if (isLoading) return <h1>Profile Loading...</h1>;
+  // if (!data) {
+  //   return <p>Loading...</p>; // Show a loading state instead of breaking the app
+  // }
   const { user } = data;
   return (
     <div className="max-w-4xl mx-auto px-4 my-24">
@@ -59,7 +61,7 @@ const Profile = () => {
             <h1 className="font-semibold text-gray-900 dark:text-gray-100">
               Role:
               <span className="font-normal text-gray-700 dark:text-gray-300 ml-2">
-                {/* INSTRUCTOR */} {user.role.toUpperCase}
+                {/* INSTRUCTOR */} {user.role.toUpperCase()}
               </span>
             </h1>
           </div>
