@@ -1,142 +1,25 @@
-// import { User } from "../models/user.model.js";
-// import bcrypt from "bcryptjs"
-// import { generateToken } from "../utils/generateToken.js";
-
-// export const register = async (req, res) => {
-//     try {
-//         const { name, email, password } = req.body;
-//         if (!name || !email || !password) {
-//             return res.status(400).json({
-//                 success: false,
-//                 message: "All fields are required"
-//             })
-//         }
-//         const user = await User.findOne({ email })
-//         if (user) {
-//             return res.status(400).json({
-//                 success: false,
-//                 message: "User already exists with this email."
-//             })
-//         }
-//         const hashedPassword = await bcrypt.hash(password, 10)
-//         await User.create({
-//             name,
-//             email,
-//             password: hashedPassword
-//         });
-//         return res.status(201).json({
-//             success: true,
-//             message: "User registered successfully."
-//         })
-//     } catch (error) {
-//         console.error(error)
-
-//         return res.status(500).json({
-//             success: false,
-//             message: "Failed to Register User"
-//         })
-//     }
-// }
-
-// export const login = async (req, res) => {
-//     try {
-//         const { email, password } = req.body;
-//         if (!email || !password) {
-//             return res.status(400).json({
-//                 success: false,
-//                 message: "All fields are required"
-//             })
-//         }
-//         const user = await User.findOne({ email })
-//         if (!user) {
-//             return res.status(404).json({
-//                 success: false,
-//                 message: "Incorrect Email or Password."
-//             })
-//         }
-//         const isPasswordMatch = await bcrypt.compare(password, user.password)
-//         if (!isPasswordMatch) {
-//             return res.status(400).json({
-//                 success: false,
-//                 message: "Incorrect Email or Password."
-//             })
-//         }
-//         generateToken(res, user, `Welcome Back ${user.name}`)
-//         return res.json({
-//             success: true,
-//             message: "User logged in successfully",
-//             user
-//         })
-//     } catch (error) {
-//         console.error(error)
-//         return res.status(500).json({
-//             success: false,
-//             message: "Failed to Login"
-//         })
-//     }
-// }
-
-// export const logout = async (_, res) => {
-//     try {
-//         return res.status(200).cookie("token", '', { maxAge: 0 }).json({
-//             success: true,
-//             message: "User logged out successfully."
-//         })
-//     } catch (error) {
-//         console.log(error)
-//         return res.status(500).json({
-//             success: false,
-//             message: "Failed to Logout"
-//         })
-//     }
-// }
-
-// export const getUserProfile = async (req, res) => {
-//     try {
-//         const userId = req.id;
-//         const user = await User.findById(userId).select("-password") // password nhi chahiye isiliye minus lagaya password ke pehle
-//         if (!user) {
-//             return res.status(404).json({
-//                 message: "Profile not found",
-//                 success: false,
-//             })
-//         }
-//         return res.status(200).json({
-//             success: true,
-//             user
-//         })
-//     } catch (error) {
-//         console.error(error)
-//         return res.status(500).json({
-//             success: false,
-//             message: "Failed to load User"
-//         })
-//     }
-// }
-
 import { User } from "../models/user.model.js";
-import bcrypt from "bcryptjs";
+import bcrypt from "bcryptjs"
 import { generateToken } from "../utils/generateToken.js";
-// import { deleteMediaFromCloudinary, uploadMedia } from "../utils/cloudinary.js";
+import { deleteMediaFromCloudinary, uploadMedia } from "../utils/cloudinary.js";
 
 export const register = async (req, res) => {
     try {
-
-        const { name, email, password } = req.body; // patel214
+        const { name, email, password } = req.body;
         if (!name || !email || !password) {
             return res.status(400).json({
                 success: false,
-                message: "All fields are required."
+                message: "All fields are required"
             })
         }
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email })
         if (user) {
             return res.status(400).json({
                 success: false,
-                message: "User already exist with this email."
+                message: "User already exists with this email."
             })
         }
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await bcrypt.hash(password, 10)
         await User.create({
             name,
             email,
@@ -144,71 +27,79 @@ export const register = async (req, res) => {
         });
         return res.status(201).json({
             success: true,
-            message: "Account created successfully."
+            message: "User registered successfully."
         })
     } catch (error) {
-        console.log(error);
+        console.error(error)
+
         return res.status(500).json({
             success: false,
-            message: "Failed to register"
+            message: "Failed to Register User"
         })
     }
 }
+
 export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
         if (!email || !password) {
             return res.status(400).json({
                 success: false,
-                message: "All fields are required."
+                message: "All fields are required"
             })
         }
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email })
         if (!user) {
-            return res.status(400).json({
+            return res.status(404).json({
                 success: false,
-                message: "Incorrect email or password"
+                message: "Incorrect Email or Password."
             })
         }
-        const isPasswordMatch = await bcrypt.compare(password, user.password);
+        const isPasswordMatch = await bcrypt.compare(password, user.password)
         if (!isPasswordMatch) {
             return res.status(400).json({
                 success: false,
-                message: "Incorrect email or password"
-            });
+                message: "Incorrect Email or Password."
+            })
         }
-        generateToken(res, user, `Welcome back ${user.name}`);
-
+        generateToken(res, user, `Welcome Back ${user.name}`)
+        return res.json({
+            success: true,
+            message: "User logged in successfully",
+            user
+        })
     } catch (error) {
-        console.log(error);
+        console.error(error)
         return res.status(500).json({
             success: false,
-            message: "Failed to login"
+            message: "Failed to Login"
         })
     }
 }
+
 export const logout = async (_, res) => {
     try {
-        return res.status(200).cookie("token", "", { maxAge: 0 }).json({
-            message: "Logged out successfully.",
-            success: true
+        return res.status(200).cookie("token", '', { maxAge: 0 }).json({
+            success: true,
+            message: "User logged out successfully."
         })
     } catch (error) {
-        console.log(error);
+        console.log(error)
         return res.status(500).json({
             success: false,
-            message: "Failed to logout"
+            message: "Failed to Logout"
         })
     }
 }
+
 export const getUserProfile = async (req, res) => {
     try {
         const userId = req.id;
-        const user = await User.findById(userId).select("-password").populate("enrolledCourses");
+        const user = await User.findById(userId).select("-password") // password nhi chahiye isiliye minus lagaya password ke pehle
         if (!user) {
             return res.status(404).json({
                 message: "Profile not found",
-                success: false
+                success: false,
             })
         }
         return res.status(200).json({
@@ -216,10 +107,51 @@ export const getUserProfile = async (req, res) => {
             user
         })
     } catch (error) {
-        console.log(error);
+        console.error(error)
         return res.status(500).json({
             success: false,
-            message: "Failed to load user"
+            message: "Failed to load User"
+        })
+    }
+}
+
+export const updateProfile = async (req, res) => {
+    try {
+        const userId = req.id;
+        const { name } = req.body;
+        const profilePhoto = req.file;
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found",
+                success: false,
+            })
+        }
+        // extract public id of the old image from the url is it exists;
+        if (user.photoUrl) {
+            const publicId = user.photoUrl.split("/").pop().split(".")[0]; // extract public id
+            deleteMediaFromCloudinary(publicId); // delete old image from cloudinary
+        }
+
+        // upload new profile photo
+        const cloudResponse = await uploadMedia(profilePhoto.path);
+        const photoUrl = cloudResponse.secure_url;
+
+        const updatedData = { name, photoUrl };
+        const updatedUser = await User.findByIdAndUpdate(userId, updatedData, { new: true }).select("-password");
+
+        return res.status(200).json({
+            success: true,
+            user: updatedUser,
+            message: "Profile updated successfully",
+        })
+
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({
+            success: false,
+            message: "Failed to Update Profile"
         })
     }
 }
